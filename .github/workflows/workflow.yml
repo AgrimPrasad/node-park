@@ -39,7 +39,7 @@ jobs:
     # command to push the image to a specific location.
     # "github.sha" refers to the git hash for the latest commit
     # and uniquely verifies your latest code version
-    - run: docker build --tag docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }}
+    - run: docker build --tag docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }} .
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Push the docker image tagged above to the github packages registry
