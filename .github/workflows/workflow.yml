@@ -31,12 +31,12 @@ jobs:
 
     # Tag an image with the app name and version
     # by referencing the docker build tagged as "node-park" above
-    - run: docker tag node-park docker.pkg.github.com/AgrimPrasad/repo/node-park:1.0.0
+    - run: docker tag node-park docker.pkg.github.com/agrimprasad/repo/node-park:1.0.0
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Push the docker image tagged above to the github packages registry
     # This push to the github package registry
     # is authenticated using the "GITHUB_TOKEN" secret token
     # which is auto-generated for each build by GitHub Actions
-    - run: docker push docker.pkg.github.com/AgrimPrasad/repo/node-park:1.0.0
+    - run: docker push docker.pkg.github.com/agrimprasad/repo/node-park:1.0.0
       working-directory: ${{ env.WORKING_DIRECTORY }}
