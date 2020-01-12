@@ -4,6 +4,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      WORKING_DIRECTORY: ./src
     steps:
     # Checks-out your git repo under $GITHUB_WORKSPACE on the test VM, so your workflow can access it.
     - uses: actions/checkout@v1
@@ -14,22 +17,27 @@ jobs:
         node-version: '10.x'
 
     # Installs dependencies in the local node_modules directory
-    - run: npm install
+    # npm ci is similar to npm/yarn install but is faster
+    # + creates smaller node_modules directory
+    - run: npm ci
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Runs tests for the current version of the code
     - run: npm test
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Build and tag local image (needs Dockerfile)
     - run: docker build --tag app .
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Tag an image with the app name and version (i.e. "docker.pkg.github.com/dilbert/repo/app:1.0.0")
     # by referencing the docker build tagged as "app" above
     - run: docker tag app docker.pkg.github.com/agrim/repo/app:1.0.0
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Push the docker image tagged above to the github packages registry
     # This push to the github package registry
     # is authenticated using the "GITHUB_TOKEN" secret token
     # which is auto-generated for each build by GitHub Actions
     - run: docker push docker.pkg.github.com/agrim/repo/app:1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
