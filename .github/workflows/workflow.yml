@@ -8,7 +8,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       WORKING_DIRECTORY: ./src
     steps:
-    # Checks-out your git repo under $GITHUB_WORKSPACE on the test VM, so your workflow can access it.
+    # Checks-out your git repo under $GITHUB_WORKSPACE directory on the test VM,
+    # so your workflow can access it.
     - uses: actions/checkout@v1
 
     # Downloads and caches node version 10.x
@@ -17,9 +18,7 @@ jobs:
         node-version: '10.x'
 
     # Installs dependencies in the local node_modules directory
-    # npm ci is similar to npm/yarn install but is faster
-    # + creates smaller node_modules directory
-    - run: npm ci
+    - run: npm install
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Runs tests for the current version of the code
