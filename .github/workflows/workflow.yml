@@ -1,0 +1,47 @@
+name: express-generator app
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: ./src
+    steps:
+    # Checks-out your git repo under $GITHUB_WORKSPACE directory on the test VM,
+    # so your workflow can access it.
+    - uses: actions/checkout@v2
+
+    # Downloads and caches node version 10.x
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+
+    # Installs dependencies in the local node_modules directory
+    # Note that we are running all commands relative to the ./src workingdirectory
+    - run: npm install
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    # Runs tests for the current version of the code
+    - run: npm test
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    # Login to Github Docker Registry using your github username "$GITHUB_ACTOR"
+    # and dynamically generated secret github token
+    - name: Docker Login
+      uses: azure/docker-login@v1
+      with:
+        login-server: docker.pkg.github.com
+        username: $GITHUB_ACTOR
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # Build and tag local image (needs Dockerfile)
+    # Tagging the docker image configures the "docker push"
+    # command to push the image to a specific location.
+    # "github.sha" refers to the git hash for the latest commit
+    # and uniquely verifies your latest code version
+    - run: docker build --tag docker.pkg.github.com/agrimprasad/node-park/node-park:${{ github.sha }} .
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    # Push the docker image tagged above to the github packages registry
+    - run: docker push docker.pkg.github.com/agrimprasad/node-park/node-park:${{ github.sha }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
