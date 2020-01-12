@@ -29,6 +29,11 @@ jobs:
     - run: docker build --tag node-park .
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
+    # Login to Github Docker Registry using your github username
+    # and dynamically generated secret token
+    - run: |
+        docker login docker.pkg.github.com --username $GITHUB_ACTOR --password ${{ secrets.GITHUB_TOKEN }}
+
     # Then run "docker tag" which configures the "docker push"
     # command to push the image to a specific location.
     # This target tag is generated from the source tag in "docker build"
@@ -37,11 +42,6 @@ jobs:
     - run: |
         docker tag node-park docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }}
       working-directory: ${{ env.WORKING_DIRECTORY }}
-
-    # Login to Github Docker Registry using your github username
-    # and dynamically generated secret token
-    - run: |
-        docker login docker.pkg.github.com --username $GITHUB_ACTOR --password ${{ secrets.GITHUB_TOKEN }}
 
     # Push the docker image tagged above to the github packages registry after successful login
     - run: docker push docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }}
