@@ -15,11 +15,11 @@ npx express-generator --view=pug src
 
 ```bash
 # Change to the "src" directory and
-# install node dependencies with yarn
-cd src && yarn install
+# install node dependencies with npm
+cd src && npm install
 ```
 
 ```bash
 # Start a local server at http://localhost:3000/ in Debug mode
-DEBUG=src:* yarn start
+DEBUG=src:* npm start
 ```
