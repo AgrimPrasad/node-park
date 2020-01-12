@@ -1,0 +1,29 @@
+steps:
+# Checks-out your git repo under $GITHUB_WORKSPACE on the test VM, so your workflow can access it.
+- uses: actions/checkout@v1
+
+# Downloads and caches node version 10.x
+- uses: actions/setup-node@v1
+  with:
+    node-version: '10.x'
+
+# Installs dependencies in the local node_modules directory
+- run: npm install
+
+# Runs tests for the current version of the code
+- run: npm test
+
+# Build and tag local image (needs Dockerfile)
+- run: docker build --tag app .
+
+# Tag an image with the app name and version (i.e. "docker.pkg.github.com/dilbert/repo/app:1.0.0")
+# by referencing the docker build tagged as "app" above
+- run: docker tag app docker.pkg.github.com/agrim/repo/app:1.0.0
+
+# Push the docker image tagged above to the github packages registry
+# This push to the github package registry
+# is authenticated using the "GITHUB_TOKEN" secret token
+# which is auto-generated for each build by GitHub Actions
+- run: docker push docker.pkg.github.com/agrim/repo/app:1.0.0
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
