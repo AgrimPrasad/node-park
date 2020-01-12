@@ -37,12 +37,10 @@ jobs:
     # Then run "docker tag" which configures the "docker push"
     # command to push the image to a specific location.
     # This target tag is generated from the source tag in "docker build"
-    # ${{ github.sha }} refers to the git hash of your latest commit
-    # and thus uniquely identifies your latest code version
     - run: |
-        docker tag node-park docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }}
+        docker tag node-park docker.pkg.github.com/agrimprasad/repo/node-park:latest
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
     # Push the docker image tagged above to the github packages registry after successful login
-    - run: docker push docker.pkg.github.com/agrimprasad/repo/node-park:${{ github.sha }}
+    - run: docker push docker.pkg.github.com/agrimprasad/repo/node-park:latest
       working-directory: ${{ env.WORKING_DIRECTORY }}
